@@ -367,6 +367,13 @@ namespace GitHub.Runner.Listener
 
                 var term = HostContext.GetService<ITerminal>();
                 term.WriteLine($"{DateTime.UtcNow:u}: Running job: {message.JobDisplayName}");
+                if (System.Environment.GetEnvironmentVariable("RUNNER_KILL_ON_JOB") != null) {
+                    term.WriteLine("RUNNER_KILL_ON_JOB=1 - killing process");
+                    // await CompleteJobRequestAsync(_poolId, message, lockToken, TaskResult.Canceled);
+                    // JobStatus(this, new JobStatusEventArgs(TaskAgentStatus.Offline));
+                    // Busy = false;
+                    System.Environment.Exit(1); // non retry-able exit code
+                }
 
                 // first job request renew succeed.
                 TaskCompletionSource<int> firstJobRequestRenewed = new();
